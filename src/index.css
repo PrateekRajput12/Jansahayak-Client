@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-gray-950 text-gray-100 font-sans; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-gray-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-700 rounded-full; }
+}
+
+@layer components {
+  .glass { @apply bg-white/5 backdrop-blur-md border border-white/10; }
+  .btn-primary { @apply bg-navy-700 hover:bg-navy-600 text-white px-4 py-2 rounded-lg font-medium transition-all; }
+  .btn-saffron { @apply bg-saffron-500 hover:bg-saffron-400 text-white px-4 py-2 rounded-lg font-medium transition-all; }
+  .card { @apply bg-gray-900 border border-gray-800 rounded-xl p-5; }
+  .input { @apply w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors; }
+  .badge-pending { @apply bg-yellow-500/20 text-yellow-400 text-xs px-2 py-0.5 rounded-full; }
+  .badge-under_review { @apply bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full; }
+  .badge-approved { @apply bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full; }
+  .badge-rejected { @apply bg-red-500/20 text-red-400 text-xs px-2 py-0.5 rounded-full; }
+  .badge-verified { @apply bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full; }
+}
