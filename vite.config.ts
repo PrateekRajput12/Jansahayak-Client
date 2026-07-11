@@ -6,8 +6,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/api": { target: "http://localhost:5000", changeOrigin: true },
-      "/socket.io": { target: "http://localhost:5000", ws: true },
+      "/api": { target: "https://jansahayak-server.onrender.com", changeOrigin: true },
+      "/socket.io": { target: "https://jansahayak-server.onrender.com", ws: true },
     },
   },
 });

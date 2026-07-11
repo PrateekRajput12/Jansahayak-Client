@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Shield } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Login() {
@@ -24,19 +24,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-navy-950 flex items-center justify-center p-4 bg-grid-pattern">
+      <div className="absolute inset-0 bg-blue-600/5 rounded-full blur-3xl w-96 h-96 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
+      <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <Shield size={22} className="text-white" />
+          <div className="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-5">
+            <Shield size={20} className="text-white" />
           </div>
+          <p className="text-xs text-gray-600 uppercase tracking-widest font-semibold mb-2">Secure Connection Established</p>
           <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-          <p className="text-gray-400 mt-1 text-sm">Sign in to AI JanSahayak</p>
+          <p className="text-gray-600 mt-1 text-sm">JanSahayak AI is ready. Sign in to continue.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card space-y-4">
           <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Email</label>
+            <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wider">Email</label>
             <input
               type="email" required className="input"
               placeholder="you@example.com"
@@ -45,7 +48,7 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="text-sm text-gray-400 mb-1.5 block">Password</label>
+            <label className="text-xs text-gray-500 mb-1.5 block font-medium uppercase tracking-wider">Password</label>
             <input
               type="password" required className="input"
               placeholder="••••••••"
@@ -54,14 +57,14 @@ export default function Login() {
             />
           </div>
           <button type="submit" disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white py-2.5 rounded-lg font-medium transition-all">
-            {loading ? "Signing in..." : "Sign In"}
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white py-2.5 rounded-xl font-medium transition-all flex items-center justify-center gap-2 mt-2">
+            {loading ? "Authenticating..." : <>Sign In <ArrowRight size={15} /></>}
           </button>
         </form>
 
-        <p className="text-center text-gray-500 text-sm mt-4">
+        <p className="text-center text-gray-600 text-xs mt-5">
           Don't have an account?{" "}
-          <Link to="/register" className="text-blue-400 hover:text-blue-300">Register here</Link>
+          <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">Create one</Link>
         </p>
       </div>
     </div>

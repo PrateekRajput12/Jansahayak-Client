@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
-import { ClipboardList, FileText, CheckCircle, Clock, XCircle, ChevronRight, Sparkles } from "lucide-react";
+import {
+  ClipboardList, FileText, CheckCircle, Clock, XCircle,
+  ChevronRight, Sparkles, ArrowUpRight, Activity, TrendingUp,
+} from "lucide-react";
 
 interface Stats { total: number; pending: number; under_review: number; approved: number; rejected: number }
 interface Recommendation { scheme: { _id: string; title: string; category: string; ministry?: string }; reason: string }
@@ -21,86 +24,131 @@ export default function Dashboard() {
   }, []);
 
   const statCards = [
-    { label: "Total Applied", value: stats?.total ?? 0, icon: ClipboardList, color: "text-blue-400", bg: "bg-blue-500/10" },
-    { label: "Pending", value: stats?.pending ?? 0, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/10" },
-    { label: "Approved", value: stats?.approved ?? 0, icon: CheckCircle, color: "text-green-400", bg: "bg-green-500/10" },
-    { label: "Rejected", value: stats?.rejected ?? 0, icon: XCircle, color: "text-red-400", bg: "bg-red-500/10" },
+    { label: "Total Applied", value: stats?.total ?? 0, icon: ClipboardList, color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", trend: "+2 this month" },
+    { label: "Pending Review", value: stats?.pending ?? 0, icon: Clock, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", trend: "Awaiting" },
+    { label: "Approved", value: stats?.approved ?? 0, icon: CheckCircle, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", trend: "Disbursed" },
+    { label: "Rejected", value: stats?.rejected ?? 0, icon: XCircle, color: "text-red-400", bg: "bg-red-500/10 border-red-500/20", trend: "Can reapply" },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Namaste, {user?.name?.split(" ")[0]} 🙏</h1>
-        <p className="text-gray-400 mt-1">Here's your government services overview</p>
+    <div className="space-y-6 max-w-6xl">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs text-gray-600 uppercase tracking-widest font-semibold mb-1">Dashboard</p>
+          <h1 className="text-2xl font-bold text-white">Namaste, {user?.name?.split(" ")[0]} 🙏</h1>
+          <p className="text-gray-500 text-sm mt-1">Here's your citizen intelligence briefing</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs px-3 py-1.5 rounded-xl font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Services Online
+          </div>
+        </div>
       </div>
 
-      {/* Stats */}
+      {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="card">
-            <div className={`w-10 h-10 ${bg} rounded-lg flex items-center justify-center mb-3`}>
-              <Icon size={20} className={color} />
+        {statCards.map(({ label, value, icon: Icon, color, bg, trend }) => (
+          <div key={label} className={`card border ${bg}`}>
+            <div className="flex items-start justify-between mb-4">
+              <div className={`w-9 h-9 ${bg} border rounded-xl flex items-center justify-center`}>
+                <Icon size={17} className={color} />
+              </div>
+              <TrendingUp size={13} className="text-gray-700" />
             </div>
-            <p className="text-2xl font-bold text-white">{loading ? "—" : value}</p>
-            <p className="text-sm text-gray-400 mt-0.5">{label}</p>
+            <p className="text-3xl font-bold text-white tracking-tight">{loading ? "—" : value}</p>
+            <p className="text-xs text-gray-500 mt-1 font-medium">{label}</p>
+            <p className="text-[11px] text-gray-700 mt-2">{trend}</p>
           </div>
         ))}
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <Link to="/chat" className="card hover:border-blue-500/50 transition-all group">
-          <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3">
-            <Sparkles size={20} className="text-blue-400" />
-          </div>
-          <p className="font-semibold text-white group-hover:text-blue-400 transition-colors">Ask AI Assistant</p>
-          <p className="text-sm text-gray-400 mt-1">Find schemes tailored to you</p>
-        </Link>
-        <Link to="/documents" className="card hover:border-saffron-500/50 transition-all group">
-          <div className="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center mb-3">
-            <FileText size={20} className="text-saffron-500" />
-          </div>
-          <p className="font-semibold text-white group-hover:text-saffron-500 transition-colors">Upload Documents</p>
-          <p className="text-sm text-gray-400 mt-1">Aadhar, PAN, certificates</p>
-        </Link>
-        <Link to="/applications" className="card hover:border-green-500/50 transition-all group">
-          <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center mb-3">
-            <ClipboardList size={20} className="text-green-400" />
-          </div>
-          <p className="font-semibold text-white group-hover:text-green-400 transition-colors">My Applications</p>
-          <p className="text-sm text-gray-400 mt-1">Track all your applications</p>
-        </Link>
-      </div>
+      <div className="grid lg:grid-cols-3 gap-4">
+        {/* Quick Actions */}
+        <div className="lg:col-span-1 space-y-3">
+          <p className="text-xs text-gray-600 uppercase tracking-widest font-semibold">Priority Actions</p>
 
-      {/* AI Recommendations */}
-      {recommendations.length > 0 && (
-        <div>
+          <Link to="/chat" className="card-hover flex items-center gap-3 group cursor-pointer">
+            <div className="w-9 h-9 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Sparkles size={16} className="text-blue-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors">Ask AI Assistant</p>
+              <p className="text-xs text-gray-600 mt-0.5">Find eligible schemes</p>
+            </div>
+            <ArrowUpRight size={14} className="text-gray-700 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+          </Link>
+
+          <Link to="/documents" className="card-hover flex items-center gap-3 group cursor-pointer">
+            <div className="w-9 h-9 bg-saffron-500/10 border border-saffron-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <FileText size={16} className="text-saffron-500" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white group-hover:text-saffron-500 transition-colors">Upload Documents</p>
+              <p className="text-xs text-gray-600 mt-0.5">Aadhaar, PAN, certificates</p>
+            </div>
+            <ArrowUpRight size={14} className="text-gray-700 group-hover:text-saffron-500 transition-colors flex-shrink-0" />
+          </Link>
+
+          <Link to="/applications" className="card-hover flex items-center gap-3 group cursor-pointer">
+            <div className="w-9 h-9 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <ClipboardList size={16} className="text-emerald-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white group-hover:text-emerald-400 transition-colors">My Applications</p>
+              <p className="text-xs text-gray-600 mt-0.5">Track all applications</p>
+            </div>
+            <ArrowUpRight size={14} className="text-gray-700 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
+          </Link>
+        </div>
+
+        {/* AI Recommendations */}
+        <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-white flex items-center gap-2">
-              <Sparkles size={16} className="text-blue-400" /> AI Recommended Schemes
-            </h2>
-            <Link to="/schemes" className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">
-              View all <ChevronRight size={14} />
+            <p className="text-xs text-gray-600 uppercase tracking-widest font-semibold flex items-center gap-2">
+              <Activity size={12} className="text-blue-500" /> AI Recommended Schemes
+            </p>
+            <Link to="/schemes" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
+              View all <ChevronRight size={12} />
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {recommendations.map(({ scheme, reason }) => (
-              <div key={scheme._id} className="card hover:border-gray-700 transition-colors">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <span className="text-xs text-saffron-500 font-medium uppercase tracking-wide">{scheme.category}</span>
-                    <p className="font-medium text-white mt-1">{scheme.title}</p>
-                    <p className="text-sm text-gray-400 mt-1">{reason}</p>
+
+          {loading ? (
+            <div className="space-y-3">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="card animate-pulse h-16" />
+              ))}
+            </div>
+          ) : recommendations.length === 0 ? (
+            <div className="card flex flex-col items-center justify-center py-10 text-center">
+              <Sparkles size={28} className="text-gray-700 mb-3" />
+              <p className="text-gray-500 text-sm">Complete your profile to get AI recommendations</p>
+              <Link to="/profile" className="mt-3 text-xs text-blue-400 hover:text-blue-300">Update Profile →</Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {recommendations.map(({ scheme, reason }) => (
+                <div key={scheme._id} className="card-hover flex items-start gap-3 group">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Sparkles size={13} className="text-blue-400" />
                   </div>
-                  <Link to={`/schemes`} className="text-blue-400 hover:text-blue-300 flex-shrink-0">
-                    <ChevronRight size={18} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-[10px] font-semibold text-saffron-500 uppercase tracking-wider">{scheme.category}</span>
+                    </div>
+                    <p className="text-sm font-semibold text-white truncate">{scheme.title}</p>
+                    <p className="text-xs text-gray-600 mt-0.5 line-clamp-1">{reason}</p>
+                  </div>
+                  <Link to="/schemes" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ArrowUpRight size={14} className="text-blue-400 mt-1" />
                   </Link>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
